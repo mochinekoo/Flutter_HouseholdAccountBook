@@ -1,6 +1,11 @@
-android/** linguist-detectable=false
-ios/** linguist-detectable=false
-linux/** linguist-detectable=false
-macos/** linguist-detectable=false
-web/** linguist-detectable=false
-windows/** linguist-detectable=false
+*.h linguist-detectable=false
+*.c linguist-detectable=false
+*.java linguist-detectable=false
+*.cpp linguist-detectable=false
+*.kt linguist-detectable=false
+*.rb linguist-detectable=false
+*.swift linguist-detectable=false
+*.cmake linguist-detectable=false
+*.plist linguist-detectable=false
+*.html linguist-detectable=false
+CMakeLists.txt linguist-detectable=false
