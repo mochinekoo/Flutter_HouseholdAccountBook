@@ -4,3 +4,6 @@
 # 開発環境
 * IntelJ IDEA
 * Windows10
+
+# ライセンス
+* Mitライセンス
