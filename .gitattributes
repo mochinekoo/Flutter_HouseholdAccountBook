@@ -1,7 +1,7 @@
 *.h linguist-detectable=false
-*.c linguist-detectable=false
+*.c linguist-vendored
 *.java linguist-detectable=false
-*.cpp linguist-detectable=false
+*.cpp linguist-vendored
 *.kt linguist-detectable=false
 *.rb linguist-detectable=false
 *.swift linguist-detectable=false
@@ -13,4 +13,4 @@ ios/** linguist-detectable=false
 linux/** linguist-detectable=false
 macos/** linguist-detectable=false
 web/** linguist-detectable=false
-windows/** linguist-detectable=false
+windows/** linguist-vendored
