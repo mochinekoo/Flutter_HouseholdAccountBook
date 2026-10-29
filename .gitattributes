@@ -9,3 +9,8 @@
 *.plist linguist-detectable=false
 *.html linguist-detectable=false
 CMakeLists.txt linguist-detectable=false
+ios/** linguist-detectable=false
+linux/** linguist-detectable=false
+macos/** linguist-detectable=false
+web/** linguist-detectable=false
+windows/** linguist-detectable=false
