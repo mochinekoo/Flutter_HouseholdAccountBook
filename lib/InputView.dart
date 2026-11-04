@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class InputView extends StatefulWidget {
@@ -9,6 +11,7 @@ class InputView extends StatefulWidget {
 
 class InputViewState extends State<InputView> {
   int _selectdIndex = 0;
+  final TextEditingController dataController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +22,35 @@ class InputViewState extends State<InputView> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: .center,
+          mainAxisAlignment: .start,
           children: [
-            const Text(''),
+            TextField(
+              textAlign: TextAlign.right,
+              keyboardType: TextInputType.text,
+            ),
+            TextField(
+              controller: dataController,
+              readOnly: true,
+              onTap: () async {
+                final DateTime? picked = await showDatePicker(
+                  locale: const Locale("ja"),
+                  context: context,
+                  firstDate: DateTime(1000),
+                  lastDate: DateTime(3000)
+                );
+                if (picked != null) {
+                  dataController.text = "${picked.year}/${picked.month}/${picked.day}";
+                }
+            },),
+            TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.orange
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('保存')
+            )
           ],
         ),
       ),
