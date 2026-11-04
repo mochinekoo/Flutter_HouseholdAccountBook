@@ -18,6 +18,31 @@ class HomeViewState extends State<HomeView> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("ホーム"),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              switch (value) {
+                case 'app_about': {
+                  showAboutDialog(
+                      context: context,
+                      children: [
+                        Text('作者:もちねこ'),
+                        Text('ライセンス：MITライセンス')
+                      ]
+                  );
+                  break;
+                }
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem(
+                  value: 'app_about',
+                  child: Text('アプリについて')
+              ),
+            ]
+          )
+        ],
       ),
       body: Center(
         child: Column(
