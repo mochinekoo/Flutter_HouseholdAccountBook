@@ -56,6 +56,26 @@ class HomeViewState extends State<HomeView> {
       );
     }
 
+    List<Widget> _pageList = [
+      Center(
+        child:  Container(
+          margin: EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...map.values.expand((widgets) => widgets),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      Center()
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -91,22 +111,7 @@ class HomeViewState extends State<HomeView> {
           )
         ],
       ),
-      body: Center(
-        child:  Container(
-            margin: EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              child: SizedBox(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ...map.values.expand((widgets) => widgets),
-                  ],
-                ),
-              ),
-            ),
-        ),
-      ),
+      body: _pageList[_selectdIndex],
       bottomNavigationBar: NavigationBar(
           selectedIndex: _selectdIndex,
           onDestinationSelected: (index) {
