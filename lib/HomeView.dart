@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:householdaccountbook/DatabaseManager.dart';
 import 'package:householdaccountbook/InputView.dart';
 
 class HomeView extends StatefulWidget {
@@ -14,6 +15,31 @@ class HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    var dbManager = DatabaseManager.GetInstance();
+
+    Map<String, List<Widget>> map = {};
+    var list = dbManager.GetRawData();
+    for (var i in list) {
+      var date = i.dateTime.toIso8601String();
+      var shopName = i.shopName;
+      var itemName = i.itemName;
+      var price = i.price;
+      var someID = i.someID.toString();
+
+      if (!map.containsKey(someID)) {
+        map[someID] = [Text(date), Text(shopName)];
+      }
+
+      map[someID]?.add(
+          Row(
+            children: [
+              Text(itemName),
+              Text(price.toString())
+            ],
+          )
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -45,12 +71,13 @@ class HomeViewState extends State<HomeView> {
         ],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            const Text(''),
-          ],
-        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ...map.values.expand((widgets) => widgets),
+            ],
+          ),
+        )
       ),
       bottomNavigationBar: NavigationBar(
           selectedIndex: _selectdIndex,
