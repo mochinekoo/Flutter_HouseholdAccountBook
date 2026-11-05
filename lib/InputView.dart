@@ -13,6 +13,7 @@ class InputView extends StatefulWidget {
 
 class InputViewState extends State<InputView> {
   int _selectdIndex = 0;
+  final _key = GlobalKey<FormState>();
   final TextEditingController dataController = TextEditingController();
 
   @override
@@ -22,17 +23,38 @@ class InputViewState extends State<InputView> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("入力"),
       ),
-      body: Center(
+      body: Form(
+        key: _key,
         child: Column(
           mainAxisAlignment: .start,
           children: [
-            TextField(
+            TextFormField(
               textAlign: TextAlign.right,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: '値段',
+                hintText: '値段を入力してください'
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return "必須です";
+                }
+                return null;
+              },
             ),
-            TextField(
+            TextFormField(
               controller: dataController,
               readOnly: true,
+              decoration: const InputDecoration(
+                  labelText: '日付',
+                  hintText: '日付を入力してください'
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return "必須です";
+                }
+                return null;
+              },
               onTap: () async {
                 final DateTime? picked = await showDatePicker(
                   locale: const Locale("ja"),
@@ -41,7 +63,7 @@ class InputViewState extends State<InputView> {
                   lastDate: DateTime(3000)
                 );
                 if (picked != null) {
-                  dataController.text = "${picked.year}/${picked.month}/${picked.day} ${picked.hour}:${picked.minute}";
+                  dataController.text = DateFormat("yyyy/MM/dd HH:mm").format(picked);
                 }
             },),
             TextButton(
@@ -49,6 +71,10 @@ class InputViewState extends State<InputView> {
                   backgroundColor: Colors.orange
                 ),
                 onPressed: () {
+                  if (!_key.currentState!.validate()) {
+                    return;
+                  }
+
                   Navigator.pop(context);
                   DateTime time = DateFormat("yyyy/MM/dd HH:mm").parse(dataController.text);
                   DatabaseManager.GetInstance().Add(time, "aa", "ii", 10, 10);
