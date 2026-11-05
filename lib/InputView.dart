@@ -104,97 +104,128 @@ class InputViewState extends State<InputView> {
           child: Column(
             mainAxisAlignment: .start,
             children: [
-              TextFormField(
-                controller: dateTextController,
-                readOnly: true,
-                decoration: const InputDecoration(
-                    labelText: '日付',
-                    hintText: '日付を入力してください'
+              DefaultTabController(
+                length: 2,
+                child: Column(
+                  children: [
+                    const TabBar(
+                      tabs: [
+                        Tab(text: '支出'),
+                        Tab(text: '収入'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 300,
+                      child: TabBarView(
+                        children: [
+                          Center(
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    controller: dateTextController,
+                                    readOnly: true,
+                                    decoration: const InputDecoration(
+                                        labelText: '日付',
+                                        hintText: '日付を入力してください'
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.trim().isEmpty) {
+                                        return "必須です";
+                                      }
+                                      return null;
+                                    },
+                                    onTap: () async {
+                                      final DateTime? pickDate = await showDatePicker(
+                                          locale: const Locale("ja"),
+                                          context: context,
+                                          firstDate: DateTime(1000),
+                                          lastDate: DateTime(3000)
+                                      );
+                                      final TimeOfDay? pickTime = await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.now()
+                                      );
+
+                                      DateTime date = DateTime(
+                                        pickDate!.year,
+                                        pickDate.month,
+                                        pickDate.day,
+                                        pickTime!.hour,
+                                        pickTime.minute,
+                                      );
+
+                                      dateTextController.text = DateFormat("yyyy/MM/dd HH:mm").format(date);
+                                    },
+                                  ),
+                                  TextFormField(
+                                    controller: shopNameController,
+                                    textAlign: TextAlign.right,
+                                    keyboardType: TextInputType.text,
+                                    decoration: const InputDecoration(
+                                        labelText: '店名',
+                                        hintText: '店名を入力してください'
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.trim().isEmpty) {
+                                        return "必須です";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  Column(
+                                    children: [
+                                      IconButton(
+                                        onPressed: () => {
+                                          setState(() {
+                                            _itemRowList.add(ItemRow());
+                                          })
+                                        },
+                                        icon: Icon(Icons.add),
+                                      ),
+                                      ..._itemRowList.map(buildItemRow),
+                                    ],
+                                  ),
+                                  TextButton(
+                                      style: TextButton.styleFrom(
+                                          backgroundColor: Colors.orange
+                                      ),
+                                      onPressed: () {
+                                        if (!_key.currentState!.validate()) {
+                                          return;
+                                        }
+
+                                        Navigator.pop(context);
+                                        DateTime time = DateFormat("yyyy/MM/dd HH:mm").parse(dateTextController.text);
+                                        var dbManager = DatabaseManager.GetInstance();
+                                        var dbData = dbManager.GetRawData();
+                                        var someID = 0;
+                                        if (dbData.length >= 2) {
+                                          someID = dbData[dbData.length - 1].someID + 1;
+                                        }
+
+                                        for (var itemRow in _itemRowList) {
+                                          var itemName = itemRow.name.text;
+                                          var price = itemRow.price.text;
+                                          debugPrint("$itemName,$price");
+                                          dbManager.Add(time, shopNameController.text, itemName, int.parse(price), someID);
+                                        }
+                                      },
+                                      child: Text('保存')
+                                  )
+                                ],
+                              )
+                          ),
+                          Center(
+                              child: Column(
+                                children: [],
+                              )
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "必須です";
-                  }
-                  return null;
-                },
-                onTap: () async {
-                  final DateTime? pickDate = await showDatePicker(
-                      locale: const Locale("ja"),
-                      context: context,
-                      firstDate: DateTime(1000),
-                      lastDate: DateTime(3000)
-                  );
-                  final TimeOfDay? pickTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now()
-                  );
-
-                  DateTime date = DateTime(
-                    pickDate!.year,
-                    pickDate.month,
-                    pickDate.day,
-                    pickTime!.hour,
-                    pickTime.minute,
-                  );
-
-                  dateTextController.text = DateFormat("yyyy/MM/dd HH:mm").format(date);
-                },
               ),
-              TextFormField(
-                controller: shopNameController,
-                textAlign: TextAlign.right,
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(
-                    labelText: '店名',
-                    hintText: '店名を入力してください'
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "必須です";
-                  }
-                  return null;
-                },
-              ),
-              Column(
-                children: [
-                  IconButton(
-                    onPressed: () => {
-                      setState(() {
-                        _itemRowList.add(ItemRow());
-                      })
-                    },
-                    icon: Icon(Icons.add),
-                  ),
-                  ..._itemRowList.map(buildItemRow),
-                ],
-              ),
-              TextButton(
-                  style: TextButton.styleFrom(
-                      backgroundColor: Colors.orange
-                  ),
-                  onPressed: () {
-                    if (!_key.currentState!.validate()) {
-                      return;
-                    }
-
-                    Navigator.pop(context);
-                    DateTime time = DateFormat("yyyy/MM/dd HH:mm").parse(dateTextController.text);
-                    var dbManager = DatabaseManager.GetInstance();
-                    var dbData = dbManager.GetRawData();
-                    var someID = 0;
-                    if (dbData.length >= 2) {
-                      someID = dbData[dbData.length - 1].someID + 1;
-                    }
-
-                    for (var itemRow in _itemRowList) {
-                      var itemName = itemRow.name.text;
-                      var price = itemRow.price.text;
-                      debugPrint("$itemName,$price");
-                      dbManager.Add(time, shopNameController.text, itemName, int.parse(price), someID);
-                    }
-                  },
-                  child: Text('保存')
-              )
             ],
           ),
         ),
