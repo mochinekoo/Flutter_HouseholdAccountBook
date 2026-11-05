@@ -14,3 +14,4 @@ linux/** linguist-detectable=false
 macos/** linguist-detectable=false
 web/** linguist-detectable=false
 windows/** linguist-vendored
+*.sql linguist-detectable=true
