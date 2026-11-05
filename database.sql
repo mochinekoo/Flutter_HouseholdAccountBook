@@ -1,0 +1,1 @@
+CREATE TABLE book(id INTEGER PRIMARY KEY , buyDate DATE, shopName varchar(255), someID INTEGER);

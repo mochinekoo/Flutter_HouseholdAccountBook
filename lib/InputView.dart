@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:householdaccountbook/DatabaseManager.dart';
+import 'package:intl/intl.dart';
 
 class InputView extends StatefulWidget {
   const InputView({super.key});
@@ -39,7 +41,7 @@ class InputViewState extends State<InputView> {
                   lastDate: DateTime(3000)
                 );
                 if (picked != null) {
-                  dataController.text = "${picked.year}/${picked.month}/${picked.day}";
+                  dataController.text = "${picked.year}/${picked.month}/${picked.day} ${picked.hour}:${picked.minute}";
                 }
             },),
             TextButton(
@@ -48,6 +50,8 @@ class InputViewState extends State<InputView> {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
+                  DateTime time = DateFormat("yyyy/MM/dd HH:mm").parse(dataController.text);
+                  DatabaseManager.GetInstance().Add(time, "aa", "ii", 10, 10);
                 },
                 child: Text('保存')
             )

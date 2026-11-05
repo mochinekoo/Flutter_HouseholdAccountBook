@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:householdaccountbook/DatabaseManager.dart';
 import 'HomeView.dart';
 
 void main() {
+  DatabaseManager.GetInstance().InitDatabase();
   runApp(const MyApp());
 }
 
