@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:householdaccountbook/DatabaseManager.dart';
 import 'package:householdaccountbook/InputView.dart';
+import 'package:intl/intl.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key, required this.title});
@@ -19,22 +20,37 @@ class HomeViewState extends State<HomeView> {
 
     Map<String, List<Widget>> map = {};
     var list = dbManager.GetRawData();
+    debugPrint("${list.length}");
     for (var i in list) {
-      var date = i.dateTime.toIso8601String();
+      var dateRaw = i.dateTime;
+      var date = DateFormat("yyyy年mm月dd日 (E)", 'ja').format(dateRaw);
       var shopName = i.shopName;
       var itemName = i.itemName;
       var price = i.price;
       var someID = i.someID.toString();
 
       if (!map.containsKey(someID)) {
-        map[someID] = [Text(date), Text(shopName)];
+        map[someID] = [
+          Text(
+            date,
+            style: TextStyle(),
+          ),
+          Text(
+              shopName,
+              style: TextStyle(),
+          )
+        ];
       }
 
       map[someID]?.add(
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(itemName),
-              Text(price.toString())
+              Text("　　$itemName"),
+              Text(
+                  price.toString(),
+                  style: TextStyle(),
+              )
             ],
           )
       );
@@ -45,6 +61,11 @@ class HomeViewState extends State<HomeView> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("ホーム"),
         actions: [
+          IconButton(onPressed: () => {
+
+              },
+              icon: Icon(Icons.search)
+          ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: (value) {
@@ -71,13 +92,20 @@ class HomeViewState extends State<HomeView> {
         ],
       ),
       body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              ...map.values.expand((widgets) => widgets),
-            ],
-          ),
-        )
+        child:  Container(
+            margin: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...map.values.expand((widgets) => widgets),
+                  ],
+                ),
+              ),
+            ),
+        ),
       ),
       bottomNavigationBar: NavigationBar(
           selectedIndex: _selectdIndex,
@@ -93,7 +121,7 @@ class HomeViewState extends State<HomeView> {
             ),
             NavigationDestination(
                 icon: Icon(Icons.home_filled),
-                label: "ホーム"
+                label: "支出と収入"
             ),
           ]
       ),
